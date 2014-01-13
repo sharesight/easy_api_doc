@@ -10,15 +10,17 @@ module EasyApiDoc
     end
 
     def nested?
-      self['type'] == nil
+       @attributes[@attributes.keys.first].is_a? Hash
     end
 
     def parameters
-      return [] unless nested?
       return @parameters if @parameters
       field_namespace = @field_namespace || []
       field_namespace << @name
-      @parameters = load_children(EasyApiDoc::Parameter, nil, {:extra_attributes => {'field_namespace' => field_namespace}})
+      if nested?
+        field_namespace << @attributes.keys.first
+      end
+      @parameters = load_children(EasyApiDoc::Parameter, nil, {:extra_attributes => {'field_namespace' => field_namespace}, :exclude => 'field_namespace'}})
     end
 
     def scope_level
@@ -27,7 +29,7 @@ module EasyApiDoc
 
     private
 
-    # Field namespace is for managing nested paramaters so that the form we output will have an input labelled correctly in our executable harness
+    # Field namespace is for managing nested parameters so that the form we output will have an input labeled correctly in our executable harness
     # :user => {:email}
     # will produce: 'user[email]' as the @field_name
     # name: the name/label of this parameter (email in our example)
@@ -44,6 +46,5 @@ module EasyApiDoc
       fname += '[]' if self['type'] == 'array'
       @field_name = fname
     end
-
   end
 end
