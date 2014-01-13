@@ -20,7 +20,7 @@ module EasyApiDoc
       if nested?
         field_namespace << @attributes.keys.first
       end
-      @parameters = load_children(EasyApiDoc::Parameter, nil, {:extra_attributes => {'field_namespace' => field_namespace}, :exclude => 'field_namespace'}})
+      @parameters = load_children(EasyApiDoc::Parameter, nil, {:extra_attributes => {'field_namespace' => field_namespace}, :exclude => 'field_namespace'})
     end
 
     def scope_level
