@@ -10,14 +10,22 @@ module EasyApiDoc
     end
 
     def nested?
-       @attributes[@attributes.keys.first].is_a? Hash
+      nested_simple? or nested_complex?
+    end
+
+    def nested_simple?
+      @attributes[@attributes.keys.first].is_a? Hash
+    end
+
+    def nested_complex?
+      @attributes[@attributes.keys.first][@attributes[@attributes.keys.first]].is_a? Hash
     end
 
     def parameters
       return @parameters if @parameters
       field_namespace = @field_namespace || []
       field_namespace << @name
-      if nested?
+      if nested_complex?
         field_namespace << @attributes.keys.first
       end
       @parameters = load_children(EasyApiDoc::Parameter, nil, {:extra_attributes => {'field_namespace' => field_namespace}, :exclude => 'field_namespace'})
