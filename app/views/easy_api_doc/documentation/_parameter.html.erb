@@ -1,15 +1,8 @@
 <% if parameter.contains_list? %>
   <tr>
     <td><strong><%= raw('&#187; ' * parameter.scope_level) %> <%= parameter.name %></strong></td>
-    <td>nested attributes below</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td colspan="7"><%= link_to("add another item", '#', :class => 'append-fields') %></td>
+    <td>nested attribute list below</td>
+    <td colspan="5"><%= link_to("add another sub-item", '#', :class => 'append-fields') %></td>
   </tr>
   <% parameter.parameters.each do |p| %>
     <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
@@ -18,11 +11,7 @@
   <tr>
     <td><strong><%= raw('&#187; ' * parameter.scope_level) %> <%= parameter.name %></strong></td>
     <td>nested attributes below</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td colspan="5"></td>
   </tr>
   <% parameter.parameters.each do |p| %>
     <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
