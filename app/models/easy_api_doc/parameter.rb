@@ -18,7 +18,7 @@ module EasyApiDoc
     end
 
     def parameters
-      #return @parameters if @parameters
+      return @parameters if @parameters
       field_namespace = @field_namespace || []
       field_namespace << @name
       @parameters = load_children(EasyApiDoc::Parameter, nil, {:extra_attributes => {'field_namespace' => field_namespace}, :exclude => ['field_namespace']})
@@ -28,12 +28,11 @@ module EasyApiDoc
     end
 
     def scope_level
-      (@attributes['field_namespace'] || []).size
+      (@field_namespace || []).size
     end
 
     def set_namespace(base_namespace = [])
       @field_namespace = base_namespace + (@field_namespace || [])
-      set_field_name
     end
 
     private

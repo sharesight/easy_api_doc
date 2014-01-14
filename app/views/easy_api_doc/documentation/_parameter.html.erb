@@ -22,6 +22,7 @@
     <td><%= raw('&#187; ' * parameter.scope_level) %> <%= parameter.name %></td>
     <td>
       <%= text_field_tag(parameter.field_name, (parameter['example'] || parameter['default']), :class => 'input') %>
+      <%= link_to('add another item', '#', :class => 'append-fields') if parameter['type'] == 'array' %><br />
     </td>
     <td><%= link_to 'disable', '#', :class => 'disable-field-toggle' %></td>
     <td><%= parameter['type'] %></td>
