@@ -6,11 +6,9 @@
       <%= link_to("add another #{parameter.parameters.each.first.name}", '#', :class => 'append-structure', :name => "#{parameter.parameters.each.first.name}") %>
     </td>
   </tr>
-  <!-- <tbody data-group="<%= raw parameter.name %>"> -->
-    <% parameter.parameters.each do |p| %>
-      <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
-    <% end %>
-  <!--</tbody>-->
+  <% parameter.parameters.each do |p| %>
+    <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
+  <% end %>
 <% elsif parameter.nested? %>
   <tbody data-group="<%= raw parameter.name %>">
   <tr>
