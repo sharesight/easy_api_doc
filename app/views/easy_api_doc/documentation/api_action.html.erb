@@ -63,6 +63,7 @@
 
       <% if @action.parameters && @action.parameters.any? %>
       <table class='table table-bordered table-condensed'>
+        <tbody>
         <tr class='strong'>
           <th>Parameter</th>
           <th>Value</th>
@@ -75,6 +76,7 @@
         <% @action.parameters.each do |p| %>
           <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
         <% end %>
+        </tbody>
       </table>
       <% end %>
 

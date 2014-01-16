@@ -2,23 +2,29 @@
   <tr>
     <td><strong><%= raw('&#187; ' * parameter.scope_level) %> <%= parameter.name %></strong></td>
     <td>nested attribute list below</td>
-    <td colspan="5"><%= link_to("add another sub-item", '#', :class => 'append-fields') %></td>
+    <td colspan="5">
+      <%= link_to("add another #{parameter.parameters.each.first.name}", '#', :class => 'append-structure', :name => "#{parameter.parameters.each.first.name}") %>
+    </td>
   </tr>
-  <% parameter.parameters.each do |p| %>
-    <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
-  <% end %>
+  <!-- <tbody data-group="<%= raw parameter.name %>"> -->
+    <% parameter.parameters.each do |p| %>
+      <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
+    <% end %>
+  <!--</tbody>-->
 <% elsif parameter.nested? %>
+  <tbody data-group="<%= raw parameter.name %>">
   <tr>
     <td><strong><%= raw('&#187; ' * parameter.scope_level) %> <%= parameter.name %></strong></td>
-    <td>nested attributes below</td>
+    <td>attributes below</td>
     <td colspan="5"></td>
   </tr>
   <% parameter.parameters.each do |p| %>
     <%= render :partial => 'easy_api_doc/documentation/parameter', :locals => {:parameter => p} %>
   <% end %>
+  </tbody>
 <% else %>
-  <%# Standard parameter %>
   <tr>
+  <%# Standard parameter %>
     <td><%= raw('&#187; ' * parameter.scope_level) %> <%= parameter.name %></td>
     <td>
       <%= text_field_tag(parameter.field_name, (parameter['example'] || parameter['default']), :class => 'input') %>

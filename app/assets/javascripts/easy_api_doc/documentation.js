@@ -16,7 +16,7 @@ $(document).ready(function () {
       $('form.api_call .disable-field-toggle').html('disable');
     }
   });
-  
+
   // Execute the example API call form
   $('form.api_call .run_api_call').on('click', function(e) {
     try {
@@ -26,7 +26,7 @@ $(document).ready(function () {
       delete params['format'];
       var uri = form.attr('action') + '.' + format;
       var auth_settings = pop_auth_settings(params);
-  
+
       // switch out url variables;
       var matches = uri.match(/\/(\:\w+)/g);
       if(matches) {
@@ -40,7 +40,7 @@ $(document).ready(function () {
       if (params['_doc_post_data'] != null) {
         params = serialize_params(params);
         var query_string = [];
-        for (var key in params) 
+        for (var key in params)
           if (key != '_doc_post_data') {
             query_string.push(key + "=" + params[key]);
           }
@@ -51,9 +51,9 @@ $(document).ready(function () {
       } else {
         params = serialize_params(params);
       }
-  
+
       var remote_method = form.attr('method');
-  
+
       process_api_call(uri, remote_method, params, auth_settings, {'form': form, 'format': format});
     }
     catch(e) {
@@ -67,7 +67,7 @@ $(document).ready(function () {
   $('form.api_call .disable-field-toggle').on('click', function(e){
     var link = $(e.target);
     var input = link.closest('tr').children().children('.input');
-  
+
     if(input.attr('disabled')){
       input.removeAttr('disabled');
       link.html('disable');
@@ -84,24 +84,37 @@ $(document).ready(function () {
   $('.append-fields').on('click', function(e){
     var link = $(e.target);
     var input = link.parent().children('.input').first();
-  
+
     new_node = input.clone();
     new_node.val(""); // blank contents
     new_node.addClass('additional');
-  
+
     elem_to_insert_after = link.parent().children('.input, .append-fields').last();
     elem_to_insert_after.after(new_node);
-  
+
     link.parent().children('.input').each(function(i, elem) {
       elem = $(elem);
       var field_name = elem.attr('name');
       field_name = field_name.replace(/\[(_array_)?\d*\]$/, "[_array_" + i + "]");
       elem.attr('name', field_name);
     });
-  
+
     return false;
   });
 
+
+  // Nested data structure list support: creates new form elements to add another
+  // parameter of the same type, complete with all child elements (including further nested structures)
+  $('.append-structure').on('click', function(e){
+    var link = $(this);
+    var target_structure_name = link.attr('name');
+    $all_fields = $('*[data-group="' + target_structure_name + '"]');
+
+    new_node = $all_fields.first().clone();
+    $all_fields.parent().append(new_node);
+    new_node.insertAfter($all_fields.last());
+    return false;
+  });
 });
 
 // Example of how to send an api call via jQuery. Note that there are issues running this from a separate domain
@@ -113,7 +126,7 @@ function process_api_call(uri, method, data, auth_settings, options) {
   $.ajax({
 	  url: uri,
     type: method,
-    data: data, 
+    data: data,
     error: function(xhr, data, ex) {
       response = xhr.responseText;
       if(response == null || response == '' || response.size == 0){
