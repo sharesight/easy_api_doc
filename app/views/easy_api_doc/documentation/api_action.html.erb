@@ -34,22 +34,37 @@
   <% if @action.authentication %>
     <table class='table table-bordered'>
       <% auth_keys = @action.authentication.keys %>
-      <tr class='strong'>
-        <% auth_keys.each do |k| %>
-          <th><%= (k =~ /type/i) ? 'Authentication' : k %></th>
-        <% end %>
-      </tr>
-      <tr>
-        <% auth_keys.each do |k| %>
-          <td>
-            <% if  ( k =~ /type/i)  %>
-              <%= hidden_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %> <%= @action.authentication[k] %>
-            <% elsif ( k =~ /password/i)%>
-              <%= password_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %>
-            <% else %>
-              <%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %>
-            <% end %>
-          </td>
+      <% if auth_keys.size > 5 %>
+        <tr class='strong'>
+          <th colspan="2">
+            <%= @action.authentication['type'] %> Authentication
+            <%= hidden_field_tag("#{@action.authentication['type']}",  @action.authentication['type'], :class => 'input') %>
+          </th>
+          <% auth_keys.delete 'type' %>
+          <% auth_keys.each do |k| %>
+            <tr>
+              <td><%= k %></td>
+              <td><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
+            </tr>
+          <% end %>
+      <% else %>
+        <tr class='strong'>
+          <% auth_keys.each do |k| %>
+            <th><%= (k =~ /type/i) ? 'Authentication' : k %></th>
+          <% end %>
+        </tr>
+        <tr>
+          <% auth_keys.each do |k| %>
+            <td>
+              <% if  ( k =~ /type/i)  %>
+                <%= hidden_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %> <%= @action.authentication[k] %>
+              <% elsif ( k =~ /password/i)%>
+                <%= password_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %>
+              <% else %>
+                <%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %>
+              <% end %>
+            </td>
+          <% end %>
         <% end %>
       </tr>
     </table>
