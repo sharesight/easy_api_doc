@@ -3,6 +3,9 @@
 
 // Disables all fields in the API example, (convenience so that not all are needed to be disabled one at a time to update just one field)
 $(document).ready(function () {
+
+  $('.show-authentication-section').hide();
+
   $('.disable-all-toggle').on('click', function(e){
     var link = $(e.target);
     if(link.html().match(/disable/)){
@@ -115,6 +118,20 @@ $(document).ready(function () {
     new_node.insertAfter($all_fields.last());
     return false;
   });
+
+  $('.hide-authentication-section').on('click', function(e) {
+    $('*[data-group="authentication_details"]').hide();
+    $(this).hide();
+    $('.show-authentication-section').show();
+    return false;
+  });
+
+  $('.show-authentication-section').click(function(e) {
+    $('*[data-group="authentication_details"]').show();
+    $(this).hide();
+    $('.hide-authentication-section').show();
+    return false;
+  });
 });
 
 // Example of how to send an api call via jQuery. Note that there are issues running this from a separate domain
@@ -144,6 +161,8 @@ function process_api_call(uri, method, data, auth_settings, options) {
         auth_value = "Basic " + encodeBase64(auth_settings.client_id + ":" + auth_settings.secret);
       } else if (auth_settings && auth_settings.type == 'oauth_bearer') {
         auth_value = "Bearer " + auth_settings.access_token;
+      } else if (auth_settings && auth_settings.type == 'OAuth 1.0 Basic') {
+        auth_value = "OAuth1 " + encodeBase64(auth_settings.oauth_token);
       }
       if (auth_value != null)
         xhr.setRequestHeader("Authorization", auth_value.replace(/(\r\n|\n|\r)/gm,"")); // dont send through \n on headers or they will be ignored
@@ -194,13 +213,23 @@ function pop_auth_settings(params){
   auth_settings['password'] = params['_doc_authentication[password]'];
   auth_settings['secret'] = params['_doc_authentication[secret]'];
   auth_settings['access_token'] = params['_doc_authentication[access_token]'];
+  auth_settings['oauth_consumer_key'] = params['_doc_authentication[oauth_consumer_key]'];
+  auth_settings['oauth_signature'] = params['_doc_authentication[oauth_signature]'];
+  auth_settings['oauth_timestamp'] = params['_doc_authentication[oauth_timestamp]'];
+  auth_settings['oauth_nonce'] = params['_doc_authentication[oauth_nonce]'];
+  auth_settings['oauth_token'] = params['_doc_authentication[oauth_token]'];
+
   delete params['_doc_authentication[type]'];
   delete params['_doc_authentication[user]'];
   delete params['_doc_authentication[client_id]'];
   delete params['_doc_authentication[password]'];
   delete params['_doc_authentication[secret]'];
   delete params['_doc_authentication[access_token]'];
-
+  delete params['_doc_authentication[oauth_consumer_key]'];
+  delete params['_doc_authentication[oauth_signature]'];
+  delete params['_doc_authentication[oauth_timestamp]'];
+  delete params['_doc_authentication[oauth_nonce]'];
+  delete params['_doc_authentication[oauth_token]'];
   return auth_settings;
 }
 

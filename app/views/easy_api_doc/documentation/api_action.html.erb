@@ -36,17 +36,24 @@
       <% auth_keys = @action.authentication.keys %>
       <% if auth_keys.size > 5 %>
         <tr class='strong'>
-          <th colspan="2">
+          <th>
             <%= @action.authentication['type'] %> Authentication
             <%= hidden_field_tag("#{@action.authentication['type']}",  @action.authentication['type'], :class => 'input') %>
           </th>
-          <% auth_keys.delete 'type' %>
+          <th>
+            <%= link_to 'Hide', '#', :class => 'hide-authentication-section' %>
+            <%= link_to 'Show', '#', :class => 'show-authentication-section' %>
+          </th>
+          <tbody data-group='authentication_details'>
           <% auth_keys.each do |k| %>
-            <tr>
-              <td><%= k %></td>
-              <td><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
-            </tr>
+            <% unless  ( k =~ /type/i)  %>
+              <tr>
+                <td><%= k %></td>
+                <td><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
+              </tr>
+            <% end %>
           <% end %>
+          </tbody>
       <% else %>
         <tr class='strong'>
           <% auth_keys.each do |k| %>
@@ -54,6 +61,7 @@
           <% end %>
         </tr>
         <tr>
+          <tbody data-group='authentication_details'>
           <% auth_keys.each do |k| %>
             <td>
               <% if  ( k =~ /type/i)  %>
@@ -65,6 +73,7 @@
               <% end %>
             </td>
           <% end %>
+          </tbody>
         <% end %>
       </tr>
     </table>
