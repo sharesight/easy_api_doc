@@ -162,7 +162,12 @@ function process_api_call(uri, method, data, auth_settings, options) {
       } else if (auth_settings && auth_settings.type == 'oauth_bearer') {
         auth_value = "Bearer " + auth_settings.access_token;
       } else if (auth_settings && auth_settings.type == 'OAuth 1.0 Basic') {
-        auth_value = 'OAuth oauth_version="1.0", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="' + auth_settings.oauth_consumer_key + '", oauth_signature="' + auth_settings.oauth_signature;
+        auth_value = 'OAuth oauth_version="1.0", oauth_signature_method="HMAC-SHA1"'
+          + ', oauth_consumer_key="' + auth_settings.oauth_consumer_key
+          + '", oauth_signature="' + auth_settings.oauth_signature
+          + '", oauth_timestamp="' + auth_settings.oauth_timestamp
+          + '", oauth_nonce="' + auth_settings.oauth_nonce
+          + '", oauth_token="' + auth_settings.oauth_token + '"';
       }
       if (auth_value != null) {
         xhr.setRequestHeader("Authorization", auth_value.replace(/(\r\n|\n|\r)/gm,"")); // don't send through \n on headers or they will be ignored

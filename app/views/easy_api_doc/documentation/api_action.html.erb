@@ -38,7 +38,7 @@
         <tr class='strong'>
           <th>
             <%= @action.authentication['type'] %> Authentication
-            <%= hidden_field_tag("_doc_authentication['type']",  @action.authentication['type'], :class => 'input') %>
+            <%= hidden_field_tag("_doc_authentication[type]",  @action.authentication['type'], :class => 'input') %>
           </th>
           <th>
             <%= link_to 'Hide', '#', :class => 'hide-authentication-section' %>
@@ -49,7 +49,7 @@
             <% unless  ( k =~ /type/i)  %>
               <tr>
                 <td><%= k %></td>
-                <td><%= text_field_tag("_doc_authentication['#{k}']",  @action.authentication["'#{k}'"], :class => 'input') %></td>
+                <td><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
               </tr>
             <% end %>
           <% end %>
