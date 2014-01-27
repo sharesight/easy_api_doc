@@ -3,12 +3,30 @@
 
 // Disables all fields in the API example, (convenience so that not all are needed to be disabled one at a time to update just one field)
 $(document).ready(function () {
-
+  $.cookie.defaults = Object({ path: '/api/docs/api/1/public' });
+  $.cookie.raw = true; // TO BE REMOVED: DEBUG ONLY
   $('.show-authentication-section').hide();
+  var auth_settings = {};
+
+  // load up stored authentication details if they are set
+  var auth_value_cookie = $.cookie("session_settings");
+  if (auth_value_cookie) {
+    var space_split = auth_value_cookie.split(" ");
+    auth_settings['type'] = space_split[0];
+    for (var i = 1; i < space_split.length; i++) {
+      var equal_split = space_split[i].split('="')
+      auth_settings[equal_split[0]] = equal_split[1].slice(0, -2);
+      // var field = $('_doc_authentication[' + equal_split[0] + ']');
+      // if (field.value.isEmpty()) {
+      //   field.value = auth_settings[equal_split[0]];
+      // }
+    }
+  }
+
 
   $('.disable-all-toggle').on('click', function(e){
     var link = $(e.target);
-    if(link.html().match(/disable/)){
+    if (link.html().match(/disable/)){
       $('form.api_call .input').attr('disabled', 'disabled');
       link.html('enable all');
       $('form.api_call .disable-field-toggle').html('enable');
@@ -28,8 +46,7 @@ $(document).ready(function () {
       var format = params.format;
       delete params['format'];
       var uri = form.attr('action') + '.' + format;
-      var auth_settings = pop_auth_settings(params);
-
+      auth_settings = pop_auth_settings(params);
       // switch out url variables;
       var matches = uri.match(/\/(\:\w+)/g);
       if(matches) {
@@ -154,23 +171,33 @@ function process_api_call(uri, method, data, auth_settings, options) {
     beforeSend: function(xhr, settings) {
       form_output(options.form, '', '', options.format); // clear output
       form.children('.loading').show();
+
       auth_value = null;
-      if(auth_settings && auth_settings.type == 'basic') {
+      if (auth_settings && auth_settings.type == 'basic') {
         auth_value = "Basic " + encodeBase64(auth_settings.user + ":" + auth_settings.password);
       } else if (auth_settings && auth_settings.type == 'oauth_grant') {
         auth_value = "Basic " + encodeBase64(auth_settings.client_id + ":" + auth_settings.secret);
       } else if (auth_settings && auth_settings.type == 'oauth_bearer') {
         auth_value = "Bearer " + auth_settings.access_token;
-      } else if (auth_settings && auth_settings.type == 'OAuth 1.0 Basic') {
-        auth_value = 'OAuth oauth_version="1.0", oauth_signature_method="HMAC-SHA1"'
-          + ', oauth_consumer_key="' + auth_settings.oauth_consumer_key
+      } else if (auth_settings && auth_settings.type == 'OAuth') {
+        auth_value = 'OAuth oauth_version="' + auth_settings.oauth_version
+          + '", oauth_signature_method="' + auth_settings.oauth_signature_method
+          + '", oauth_consumer_key="' + auth_settings.oauth_consumer_key
           + '", oauth_signature="' + encodeBase64(auth_settings.oauth_signature)
           + '", oauth_timestamp="' + auth_settings.oauth_timestamp
           + '", oauth_nonce="' + auth_settings.oauth_nonce
           + '", oauth_token="' + auth_settings.oauth_token + '"';
+      // } else {
+      //   var auth_value_cookie = $.cookie("session_settings");
+      //   alert("found cookie ", auth_value_cookie);
+      //   if (auth_value_cookie) {
+      //     auth_value = auth_value_cookie;
+      //   }
       }
+
       if (auth_value != null) {
         xhr.setRequestHeader("Authorization", auth_value.replace(/(\r\n|\n|\r)/gm,"")); // don't send through \n on headers or they will be ignored
+        $.cookie("session_settings", auth_value);
       }
 			return true;
     },
@@ -211,32 +238,22 @@ function form_output(form, response, status, format) {
 }
 
 function pop_auth_settings(params){
-  var auth_settings = {};
+  var myKeys;
+  var my_auth_settings = {};
 
-  auth_settings['type'] = params['_doc_authentication[type]'];
-  auth_settings['user'] = params['_doc_authentication[user]'];
-  auth_settings['client_id'] = params['_doc_authentication[client_id]'];
-  auth_settings['password'] = params['_doc_authentication[password]'];
-  auth_settings['secret'] = params['_doc_authentication[secret]'];
-  auth_settings['access_token'] = params['_doc_authentication[access_token]'];
-  auth_settings['oauth_consumer_key'] = params['_doc_authentication[oauth_consumer_key]'];
-  auth_settings['oauth_signature'] = params['_doc_authentication[oauth_signature]'];
-  auth_settings['oauth_timestamp'] = params['_doc_authentication[oauth_timestamp]'];
-  auth_settings['oauth_nonce'] = params['_doc_authentication[oauth_nonce]'];
-  auth_settings['oauth_token'] = params['_doc_authentication[oauth_token]'];
+  if (params) {
+    myKeys = Object.keys(params);
+  }
 
-  delete params['_doc_authentication[type]'];
-  delete params['_doc_authentication[user]'];
-  delete params['_doc_authentication[client_id]'];
-  delete params['_doc_authentication[password]'];
-  delete params['_doc_authentication[secret]'];
-  delete params['_doc_authentication[access_token]'];
-  delete params['_doc_authentication[oauth_consumer_key]'];
-  delete params['_doc_authentication[oauth_signature]'];
-  delete params['_doc_authentication[oauth_timestamp]'];
-  delete params['_doc_authentication[oauth_nonce]'];
-  delete params['_doc_authentication[oauth_token]'];
-  return auth_settings;
+  for (var k in myKeys) {
+    var realKey = myKeys[k].match(/^_doc_authentication\[(\w+)\]/);
+    if (realKey && realKey[1]) {
+      var param_key = '_doc_authentication[' + realKey[1] + ']';
+      my_auth_settings[realKey[1]] = params[param_key];
+      delete params[param_key];
+    }
+  }
+  return my_auth_settings;
 }
 
 // helper to map the html form parameters to a hash
@@ -268,4 +285,3 @@ function serialize_params(params) {
   });
   return formatted_params;
 }
-
