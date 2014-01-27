@@ -4,7 +4,6 @@
 // Disables all fields in the API example, (convenience so that not all are needed to be disabled one at a time to update just one field)
 $(document).ready(function () {
   $.cookie.defaults = Object({ path: '/api/docs/api/1/public' });
-  $.cookie.raw = true; // TO BE REMOVED: DEBUG ONLY
   $('.show-authentication-section').hide();
   var auth_settings = {};
 
@@ -15,14 +14,14 @@ $(document).ready(function () {
     auth_settings['type'] = space_split[0];
     for (var i = 1; i < space_split.length; i++) {
       var equal_split = space_split[i].split('="')
-      auth_settings[equal_split[0]] = equal_split[1].slice(0, -2);
-      // var field = $('_doc_authentication[' + equal_split[0] + ']');
-      // if (field.value.isEmpty()) {
-      //   field.value = auth_settings[equal_split[0]];
-      // }
+      var trimChars = (i == (space_split.length - 1) ? -1 : -2); // always trim a '"' and trim a ',' on all but last string
+      auth_settings[equal_split[0]] = equal_split[1].slice(0, trimChars);
+      var field = $('*[name="_doc_authentication[' + equal_split[0] + ']"]');
+      if (field.val().length < 1) {
+        field.val(auth_settings[equal_split[0]]);
+      }
     }
   }
-
 
   $('.disable-all-toggle').on('click', function(e){
     var link = $(e.target);
@@ -197,7 +196,9 @@ function process_api_call(uri, method, data, auth_settings, options) {
 
       if (auth_value != null) {
         xhr.setRequestHeader("Authorization", auth_value.replace(/(\r\n|\n|\r)/gm,"")); // don't send through \n on headers or they will be ignored
-        $.cookie("session_settings", auth_value);
+        if (!$.cookie("session_settings")) {
+          $.cookie("session_settings", auth_value);
+        }
       }
 			return true;
     },
