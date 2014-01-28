@@ -4,7 +4,15 @@
 // Disables all fields in the API example, (convenience so that not all are needed to be disabled one at a time to update just one field)
 $(document).ready(function () {
   $.cookie.defaults = Object({ path: '/api/docs/api/1/public' });
-  $('.show-authentication-section').hide();
+  if ($.cookie("auth_hidden") == 'true') {
+    $('*[data-group="authentication_details"]').hide();
+    $('.show-authentication-section').show();
+    $('.hide-authentication-section').hide();
+  } else {
+    $('*[data-group="authentication_details"]').show();
+    $('.show-authentication-section').hide();
+    $('.hide-authentication-section').show();
+  }
   var auth_settings = {};
 
   // load up stored authentication details if they are set
@@ -139,6 +147,7 @@ $(document).ready(function () {
     $('*[data-group="authentication_details"]').hide();
     $(this).hide();
     $('.show-authentication-section').show();
+    $.cookie("auth_hidden", 'true');
     return false;
   });
 
@@ -146,6 +155,7 @@ $(document).ready(function () {
     $('*[data-group="authentication_details"]').show();
     $(this).hide();
     $('.hide-authentication-section').show();
+    $.cookie("auth_hidden", 'false');
     return false;
   });
 });
