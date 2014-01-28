@@ -196,12 +196,6 @@ function process_api_call(uri, method, data, auth_settings, options) {
           + '", oauth_timestamp="' + auth_settings.oauth_timestamp
           + '", oauth_nonce="' + auth_settings.oauth_nonce
           + '", oauth_token="' + auth_settings.oauth_token + '"';
-      // } else {
-      //   var auth_value_cookie = $.cookie("session_settings");
-      //   alert("found cookie ", auth_value_cookie);
-      //   if (auth_value_cookie) {
-      //     auth_value = auth_value_cookie;
-      //   }
       }
 
       if (auth_value != null) {
