@@ -34,7 +34,7 @@
   <% if @action.authentication %>
     <table class='table table-bordered'>
       <% auth_keys = @action.authentication.keys %>
-      <% if auth_keys.size > 5 %>
+      <% if @action.authentication['type'].downcase == "oauth" %>
         <tr class='strong'>
           <th>
             <%= @action.authentication['type'] %> Authentication
@@ -44,16 +44,25 @@
             <%= link_to 'Hide', '#', :class => 'hide-authentication-section' %>
             <%= link_to 'Show', '#', :class => 'show-authentication-section' %>
           </th>
-          <tbody data-group='authentication_details'>
-          <% auth_keys.each do |k| %>
-            <% unless  ( k =~ /type/i)  %>
-              <tr>
-                <td><%= k %></td>
-                <td><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
-              </tr>
-            <% end %>
+          <th>
+            <%= link_to 'Clear', '#', :class => 'clear-authentication-section' %>
+          </th>
+          <% if !@current_user %>
+            <tr>
+              <td colspan="3"><%= link_to "Please sign in", @api_version['defaults']['sign_in_location'], class: 'btn' %></td>
+            </tr>
+          <% else %>
+            <tbody data-group='authentication_details'>
+              <% auth_keys.each do |k| %>
+                <% unless  ( k =~ /type/i)  %>
+                  <tr>
+                    <td><%= k %></td>
+                    <td colspan="2"><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
           <% end %>
-          </tbody>
       <% else %>
         <tr class='strong'>
           <% auth_keys.each do |k| %>
@@ -91,7 +100,7 @@
         <tr class='strong'>
           <th>Parameter</th>
           <th>Value</th>
-          <th><%= link_to 'disable all', '#', :class => 'disable-all-toggle' %></th>
+          <th><%= link_to 'Disable all', '#', :class => 'disable-all-toggle' %></th>
           <th>Type</th>
           <th>Default</th>
           <th>Required</th>
