@@ -3,7 +3,6 @@
 
 // Disables all fields in the API example, (convenience so that not all are needed to be disabled one at a time to update just one field)
 $(document).ready(function () {
-  $.cookie.defaults = Object({ path: '/' });
   if ($.cookie("auth_hidden") == 'true') {
     $('*[data-group="authentication_details"]').hide();
     $('.show-authentication-section').show();
@@ -133,8 +132,8 @@ $(document).ready(function () {
     $('*[data-group="authentication_details"]').hide();
     $(this).hide();
     $('.show-authentication-section').show();
-    // $('.clear-authentication-section').hide();
-    $.cookie("auth_hidden", 'true');
+    $('.clear-authentication-section').hide();
+    $.cookie("auth_hidden", true, { path: '/' });
     return false;
   });
 
@@ -142,14 +141,15 @@ $(document).ready(function () {
     $('*[data-group="authentication_details"]').show();
     $(this).hide();
     $('.hide-authentication-section').show();
-    // $('.clear-authentication-section').show();
-    $.cookie("auth_hidden", 'false');
+    $('.clear-authentication-section').show();
+    $.cookie("auth_hidden", false, { path: '/' });
     return false;
   });
 
   $('.clear-authentication-section').click(function(e) {
     $('[name*="_doc_authentication"]').val("");
     $.cookie("session_settings", null);
+    $.cookie("auth_hidden", false, { path: '/' })
     return false;
   });
 });
