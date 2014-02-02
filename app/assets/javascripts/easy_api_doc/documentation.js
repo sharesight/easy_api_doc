@@ -3,7 +3,7 @@
 
 // Disables all fields in the API example, (convenience so that not all are needed to be disabled one at a time to update just one field)
 $(document).ready(function () {
-  $.cookie.defaults = Object({ path: '/api/docs/api/1/public' });
+  $.cookie.defaults = Object({ path: '/' });
   if ($.cookie("auth_hidden") == 'true') {
     $('*[data-group="authentication_details"]').hide();
     $('.show-authentication-section').show();
@@ -16,39 +16,6 @@ $(document).ready(function () {
     $('.hide-authentication-section').show();
   }
   var auth_settings = null;
-
-  // var auth_value_cookie = $.cookie("session_settings");
-  // if (auth_value_cookie != null) {
-  //   var auth_setting_pair = auth_value_cookie.split(" ");
-  //   auth_settings['type'] = auth_setting_pair[0];
-
-  //   if (auth_settings['type'] == 'basic') {
-  //     var auth_key_value = auth_setting_pair[1].split(':')
-  //     auth_settings['user'] = decodeBase64(auth_key_value[0]);
-  //     $('*[name="_doc_authentication[user]"]').val(auth_settings['user']);
-  //     auth_settings['password'] = decodeBase64(auth_key_value[1]);
-  //     $('*[name="_doc_authentication[password]"]').val(auth_settings['password']);
-
-  //   } else if (auth_settings['type'] == 'oauth_grant') {
-  //     var auth_key_value = auth_setting_pair[1].split(':')
-  //     auth_settings['client_id'] = decodeBase64(auth_key_value[0]);
-  //     $('*[name="_doc_authentication[client_id]"]').val(auth_settings['client_id']);
-  //     auth_settings['secret'] = decodeBase64(auth_key_value[1]);
-  //     $('*[name="_doc_authentication[secret]"]').val(auth_settings['secret']);
-
-  //   } else if (auth_settings['type'] == 'oauth_bearer') {
-  //     auth_settings['access_token'] = auth_setting_pair[1];
-  //     $('*[name="_doc_authentication[access_token]"]').val(auth_settings['access_token']);
-
-  //   } else if (auth_settings['type'] == "OAuth") {
-  //     for (var i = 1; i < auth_setting_pair.length; i++) {
-  //       var auth_key_value = auth_setting_pair[i].split('="');
-  //       var trimChars = (i == (auth_setting_pair.length - 1) ? -1 : -2); // always trim a '"' and trim a ',' on all but last string
-  //       auth_settings[auth_key_value[0]] = auth_key_value[1].slice(0, trimChars);
-  //       $('*[name="_doc_authentication[' + auth_key_value[0] + ']"]').val(auth_settings[auth_key_value[0]]);
-  //     }
-  //   }
-  // }
 
   $('.disable-all-toggle').on('click', function(e){
     var link = $(e.target);
@@ -103,7 +70,7 @@ $(document).ready(function () {
       process_api_call(uri, remote_method, params, auth_settings, {'form': form, 'format': format});
     }
     catch(e) {
-      alert("There was an error within the test harness");
+      alert("There was an error within the test harness: " + e.toString());
       throw(e);
     }
     return false;
@@ -210,18 +177,20 @@ function process_api_call(uri, method, data, auth_settings, options) {
 
       auth_value = null;
 
-
       if (auth_settings && auth_settings.type.toLowerCase() == 'basic') {
         auth_value = "Basic " + encodeBase64(auth_settings.user + ":" + auth_settings.password);
+
       } else if (auth_settings && auth_settings.type.toLowerCase() == 'oauth_grant') {
         auth_value = "Basic " + encodeBase64(auth_settings.client_id + ":" + auth_settings.secret);
+
       } else if (auth_settings && auth_settings.type.toLowerCase() == 'oauth_bearer') {
         auth_value = "Bearer " + auth_settings.access_token;
-      } else if (auth_settings && auth_settings.type.toLowerCase() == 'oauth') {
+
+      } else if (auth_settings && auth_settings.type.toLowerCase() == 'oauth') { // Oauth 1.0
         auth_value = 'OAuth oauth_version="' + auth_settings.oauth_version
           + '", oauth_signature_method="' + auth_settings.oauth_signature_method
           + '", oauth_consumer_key="' + auth_settings.oauth_consumer_key
-          + '", oauth_signature="' + encodeBase64(auth_settings.oauth_signature)
+          + '", oauth_signature="' + auth_settings.oauth_signature
           + '", oauth_timestamp="' + auth_settings.oauth_timestamp
           + '", oauth_nonce="' + auth_settings.oauth_nonce
           + '", oauth_token="' + auth_settings.oauth_token + '"';
@@ -229,7 +198,6 @@ function process_api_call(uri, method, data, auth_settings, options) {
 
       if (auth_value != null) {
         xhr.setRequestHeader("Authorization", auth_value.replace(/(\r\n|\n|\r)/gm,"")); // don't send through \n on headers or they will be ignored
-        // $.cookie("session_settings", auth_value);
       }
 			return true;
     },
