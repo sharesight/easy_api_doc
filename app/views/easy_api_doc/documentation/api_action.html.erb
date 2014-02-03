@@ -47,22 +47,21 @@
           <th>
             <%= link_to 'Clear', '#', :class => 'clear-authentication-section' %>
           </th>
-          <% if !@current_user %>
+          <% if !@current_user or !@oauth_access_token %>
             <tr>
               <td colspan="3"><%= link_to "Please sign in", @api_version['defaults']['sign_in_location'], class: 'btn' %></td>
             </tr>
-          <% else %>
-            <tbody data-group='authentication_details'>
-              <% auth_keys.each do |k| %>
-                <% unless  ( k =~ /type/i)  %>
-                  <tr>
-                    <td><%= k %></td>
-                    <td colspan="2"><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
-                  </tr>
-                <% end %>
-              <% end %>
-            </tbody>
           <% end %>
+          <tbody data-group='authentication_details'>
+            <% auth_keys.each do |k| %>
+              <% unless  ( k =~ /type/i)  %>
+                <tr>
+                  <td><%= k %></td>
+                  <td colspan="2"><%= text_field_tag("_doc_authentication[#{k}]",  @action.authentication[k], :class => 'input') %></td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
       <% else %>
         <tr class='strong'>
           <% auth_keys.each do |k| %>
