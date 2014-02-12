@@ -1,5 +1,6 @@
 require 'cgi'
 require 'base64'
+require 'oauth'
 
 module EasyApiDoc
   class DocumentationController < EasyApiDoc::ApplicationController
@@ -34,11 +35,11 @@ module EasyApiDoc
     end
 
     def create_auth_params
-      create_oauth_1_0_auth_params if (@current_user and @action.authentication['type'].downcase == "oauth")
+      create_oauth_1_0_auth_params if (@action.authentication['type'].downcase == "oauth" and @current_user)
     end
 
     def create_oauth_1_0_auth_params
-      @action.authentication['oauth_token'] = @oauth_access_token
+      @action.authentication['oauth_token'] ||= @oauth_access_token
     end
 
     # def execute_action
