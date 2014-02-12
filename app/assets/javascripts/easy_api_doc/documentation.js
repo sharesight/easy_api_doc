@@ -16,40 +16,6 @@ $(document).ready(function () {
     $('.hide-authentication-section').show();
   }
   var auth_settings = {};
-  var auth_value_cookie = $.cookie("session_settings");
-
-  if (auth_value_cookie != null) {
-    var auth_setting_pair = auth_value_cookie.split(" ");
-    auth_settings['type'] = auth_setting_pair[0].toLowerCase();
-
-    if (auth_settings['type'] == 'basic') {
-      var auth_key_value = auth_setting_pair[1].split(':')
-      auth_settings['user'] = decodeBase64(auth_key_value[0]);
-      $('*[name="_doc_authentication[user]"]').val(auth_settings['user']);
-      auth_settings['password'] = decodeBase64(auth_key_value[1]);
-      $('*[name="_doc_authentication[password]"]').val(auth_settings['password']);
-
-    } else if (auth_settings['type'] == 'oauth_grant') {
-      var auth_key_value = auth_setting_pair[1].split(':')
-      auth_settings['client_id'] = decodeBase64(auth_key_value[0]);
-      $('*[name="_doc_authentication[client_id]"]').val(auth_settings['client_id']);
-      auth_settings['secret'] = decodeBase64(auth_key_value[1]);
-      $('*[name="_doc_authentication[secret]"]').val(auth_settings['secret']);
-
-    } else if (auth_settings['type'] == 'oauth_bearer') {
-      auth_settings['access_token'] = auth_setting_pair[1];
-      $('*[name="_doc_authentication[access_token]"]').val(auth_settings['access_token']);
-
-    } else if (auth_settings['type'] == "oauth") {
-      for (var i = 1; i < auth_setting_pair.length; i++) {
-        var auth_key_value = auth_setting_pair[i].split('="');
-        var trimChars = (i == (auth_setting_pair.length - 1) ? -1 : -2); // always trim a '"' and trim a ',' on all but last string
-        auth_settings[auth_key_value[0]] = auth_key_value[1].slice(0, trimChars);
-        $('*[name="_doc_authentication[' + auth_key_value[0] + ']"]').val(auth_settings[auth_key_value[0]]);
-      }
-      reset_nonce_and_timestamp(auth_settings); // overwrite loaded nonce & timestamp to avoid reusing the same pair
-    }
-  }
 
   $('.disable-all-toggle').on('click', function(e){
     var link = $(e.target);
@@ -183,7 +149,6 @@ $(document).ready(function () {
 
   $('.clear-authentication-section').click(function(e) {
     $('[name*="_doc_authentication"]').val("");
-    $.cookie("session_settings", null);
     $.cookie("auth_hidden", false, { path: '/' })
     return false;
   });
@@ -236,7 +201,6 @@ function process_api_call(uri, method, data, auth_settings, options) {
 
       if (auth_value != null) {
         xhr.setRequestHeader("Authorization", auth_value.replace(/(\r\n|\n|\r)/gm,"")); // don't send through \n on headers or they will be ignored
-        $.cookie("session_settings", auth_value.concat(extra_settings));
       }
 			return true;
     },
@@ -323,11 +287,4 @@ function serialize_params(params) {
     }
   });
   return formatted_params;
-}
-
-function reset_nonce_and_timestamp(auth_settings) {
-  auth_settings['oauth_nonce'] = Math.round(Math.random() * 10000);
-  $('*[name="_doc_authentication[oauth_nonce]"]').val(auth_settings['oauth_nonce']);
-  auth_settings['oauth_timestamp'] = Date.now()/1000;
-  $('*[name="_doc_authentication[oauth_timestamp]"]').val(auth_settings['oauth_timestamp']);
 }
