@@ -4,6 +4,7 @@
   <title><%= @app_title || 'EasyApiDoc' %> </title>
   <link rel="shortcut icon" href="<%= asset_path("easy_api_doc/favicon.ico") %>" >
   <%= stylesheet_link_tag    "easy_api_doc/application", :media => "all" %>
+  <%= stylesheet_link_tag @meta['stylesheet'] if @meta and @meta['stylesheet'] %>
   <%= javascript_include_tag "easy_api_doc/application" %>
   <%= csrf_meta_tags %>
 </head>
