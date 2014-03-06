@@ -39,7 +39,7 @@ module EasyApiDoc
     end
 
     def create_oauth_1_0_auth_params
-      @action.authentication['oauth_token'] ||= @oauth_access_token
+      @action.authentication['oauth_token'] = @oauth_access_token
     end
 
     # def execute_action
