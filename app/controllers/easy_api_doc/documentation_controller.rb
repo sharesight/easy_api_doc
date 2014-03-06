@@ -35,7 +35,7 @@ module EasyApiDoc
     end
 
     def create_auth_params
-      create_oauth_1_0_auth_params if (@action.authentication['type'].downcase == "oauth" and @current_user)
+      create_oauth_1_0_auth_params if @action.authentication['type'].downcase == "oauth"
     end
 
     def create_oauth_1_0_auth_params
