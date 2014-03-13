@@ -1,5 +1,10 @@
-<h1>API Versions</h1>
-
-<% @api_versions.each do |api| %>
-  <p><%= api.name %></p>
-<% end %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title">API Versions</h1>
+  </div>
+  <div class="panel-body">
+    <% @api_versions.each do |api| %>
+      <p><%= api.name %></p>
+    <% end %>
+  </div>
+</div>
