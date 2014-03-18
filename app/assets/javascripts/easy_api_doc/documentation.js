@@ -4,16 +4,16 @@
 // Disables all fields in the API example, (convenience so that not all are needed to be disabled one at a time to update just one field)
 $(document).ready(function () {
   $.cookie.defaults = Object({ path: '/' });
-  if ($.cookie("auth_hidden") == 'true') {
-    $('*[data-group="authentication_details"]').hide();
-    $('.show-authentication-section').show();
-    $('.clear-authentication-section').hide();
-    $('.hide-authentication-section').hide();
-  } else {
+  if ($.cookie("auth_hidden") == false) {
     $('*[data-group="authentication_details"]').show();
     $('.show-authentication-section').hide();
     $('.clear-authentication-section').show();
     $('.hide-authentication-section').show();
+  } else {
+    $('*[data-group="authentication_details"]').hide();
+    $('.show-authentication-section').show();
+    $('.clear-authentication-section').hide();
+    $('.hide-authentication-section').hide();
   }
   var auth_settings = {};
 
