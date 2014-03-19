@@ -3,8 +3,17 @@
     <h1 class="panel-title">API Versions</h1>
   </div>
   <div class="panel-body">
+    <ul>
     <% @api_versions.each do |api| %>
-      <p><%= api.name %></p>
+      <li class="dropdown">
+        <%= link_to api.name, api_link(api) %>
+        <ul>
+          <% api.namespaces.each do |ns| %>
+            <li><%= link_to ns.name, namespace_link(ns) %></li>
+          <% end %>
+        </ul>
+      </li>
     <% end %>
+    </ul>
   </div>
 </div>

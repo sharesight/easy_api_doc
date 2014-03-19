@@ -1,0 +1,17 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title">API Version</h1>
+  </div>
+  <div class="panel-body">
+    <p><%= @api_version.name %></p>
+  </div>
+  <div class="panel-heading">
+    <h1 class="panel-title"><%= pluralize(@api_version.namespaces.size, 'API Namespace') %></h1>
+  </div>
+  <div class="panel-body">
+    <% @api_version.namespaces.each do |ns| %>
+      <p><%= link_to ns.name, namespace_link(ns) %></p>
+    <% end %>
+  </div>
+
+</div>

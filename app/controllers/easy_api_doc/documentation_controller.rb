@@ -6,6 +6,10 @@ module EasyApiDoc
   class DocumentationController < EasyApiDoc::ApplicationController
     before_filter :defaults
 
+    def api_base
+      @api_version = EasyApiDoc::ApiVersion.find(params[:api])
+    end
+
     def namespace
       @resources = @namespace.resources
     end
