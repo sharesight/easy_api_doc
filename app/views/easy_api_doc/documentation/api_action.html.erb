@@ -51,6 +51,10 @@
             <tr>
               <td colspan="3"><%= link_to "Please sign into run API calls", @api_version['defaults']['sign_in_location'], class: 'btn' %></td>
             </tr>
+          <% else %>
+            <tr>
+              <td colspan="3">Signed in.</td>
+            </tr>
           <% end %>
           <tbody data-group='authentication_details'>
             <% auth_keys.each do |k| %>
