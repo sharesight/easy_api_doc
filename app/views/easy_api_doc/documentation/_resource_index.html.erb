@@ -5,8 +5,8 @@
 </div>
 
 <% @namespace.resources.each do |rs| %>
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <div class="panel panel-default panel-collapse-container">
+    <div class="panel-heading panel-collapse-heading">
       <h4 class="panel-title">
         <a data-toggle="collapse" href="#collapse_<%= rs.name %>">
           <%= rs.name %>
