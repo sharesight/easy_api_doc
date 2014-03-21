@@ -4,11 +4,12 @@ Collapser =
     $panels.addClass('closed')
     $heading_links = $('.panel-collapse-heading a')
     $heading_links.each ->
-      if $(this).closest('.panel').find('.panel-collapse').hasClass('in')
+      if $(this).closest('.panel').hasClass('panel-selected')
+        $(this).prepend('<i class="ico-collapse ico ico-fw ico-chevron-up"></i>')
+      else if $(this).closest('.panel').find('.panel-collapse').hasClass('in')
         $(this).prepend('<i class="ico-collapse ico ico-fw ico-chevron-down"></i>')
       else
         $(this).prepend('<i class="ico-collapse ico ico-fw ico-chevron-up"></i>')
-
     $('.collapse').collapse()
     $('.panel').on # bootstrap collapse events!
       'show.bs.collapse': ->
