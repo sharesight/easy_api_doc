@@ -1,6 +1,12 @@
-<% content_for(:sidebar) do %>
+<% provide(:sidebar) do %>
   <%= render :partial => 'resource_index' %>
-<% end %>  
+<% end %>
+
+<%= breadcrumbs([
+  [@api_version.name, api_link(@api_version)],
+  [@namespace.name, namespace_link(@namespace)],
+  [@resource.name]
+]) %>
 
 <div class="panel panel-default">
   <div class="panel-heading">
