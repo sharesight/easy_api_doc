@@ -25,8 +25,4 @@ class Configuration
     @options[key]
   end
 
-  # def []=(key, value)
-  #   @options[key] = value
-  # end
-
 end
