@@ -1,11 +1,17 @@
 <nav class="navbar navbar-default" role="navigation">
+
+  <% if @meta && @meta['logo'] %>
+    <div class="logo">
+      <a href="/"><img src="<%= @meta['logo'] %>"></a>
+    </div>
+  <% end %>
+
   <div class="navbar-header">
     <%= link_to @app_title || 'API Documentation', root_path, :class => 'navbar-brand' %>
   </div>
 
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
-
       <% @api_versions.each do |api| %>
         <li class="dropdown">
           <%= link_to api.name, '#', :class => 'dropdown-toggle', 'data-toggle' => 'dropdown' %>
@@ -16,8 +22,6 @@
           </ul>
         </li>
       <% end %>
-
     </ul>
-
   </div>
 </nav>
