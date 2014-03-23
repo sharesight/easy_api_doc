@@ -1,15 +1,15 @@
 <nav class="navbar navbar-default" role="navigation">
 
-  <% if @meta && @meta['logo'] %>
-    <div class="logo">
-      <a href="/"><img src="<%= @meta['logo'] %>"></a>
-    </div>
-  <% end %>
-
-  <div class="navbar-header">
+  <div class="navbar navbar-header">
+    <% if @meta && @meta['logo'] %>
+      <div class="logo">
+        <a href="/"><img src="<%= @meta['logo'] %>"></a>
+      </div>
+    <% end %>
+  </div>
+  <div class="navbar navbar-header">
     <%= link_to @app_title || 'API Documentation', root_path, :class => 'navbar-brand' %>
   </div>
-
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
       <% @api_versions.each do |api| %>
