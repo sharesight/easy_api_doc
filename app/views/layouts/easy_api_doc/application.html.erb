@@ -9,26 +9,21 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
   <div class='container'>
-    <%= render :partial => 'layouts/easy_api_doc/header' %>
-
     <div class='row'>
-
+      <%= render :partial => 'layouts/easy_api_doc/header' %>
+    </div>
+    <div class='row'>
       <% if sidebar = yield(:sidebar) %>
         <div class='col-md-3 sidebar'>
             <%= sidebar %>
             <%#= render :partial => 'shared/versions_index' %>
         </div>
       <% end %>
-
       <div class='<%= sidebar ? "col-md-9" : "col-md-12" %> main'>
         <%= yield %>
       </div>
-
     </div>
-
   </div>
-
 </body>
 </html>
