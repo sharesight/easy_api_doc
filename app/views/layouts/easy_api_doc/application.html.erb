@@ -8,11 +8,13 @@
   <%= javascript_include_tag "easy_api_doc/application" %>
   <%= csrf_meta_tags %>
 </head>
-<body>
-  <div class='container'>
-    <div class='row'>
+<body id="easy_api_doc">
+  <div class='row' id="header">
+    <div class="container">
       <%= render :partial => 'layouts/easy_api_doc/header' %>
     </div>
+  </div>
+  <div class='container' id="content">
     <div class='row'>
       <% if sidebar = yield(:sidebar) %>
         <div class='col-md-3 sidebar'>
