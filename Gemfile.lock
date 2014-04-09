@@ -3,7 +3,7 @@ PATH
   specs:
     easy_api_doc (0.3.0)
       github-markup (~> 0.7.2)
-      rails (~> 4.1.0)
+      rails (>= 4.1.0.rc2)
       redcarpet
 
 GEM
