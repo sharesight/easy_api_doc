@@ -34,7 +34,7 @@
   <% if @action.authentication %>
     <table class='table table-bordered'>
       <% auth_keys = @action.authentication.keys %>
-      <% if @action.authentication['type'].downcase == "oauth" %>
+      <% if ["oauth", "oauth2"].include?(@action.authentication['type'].downcase) %>
         <tr class='strong'>
           <th>
             <%= @action.authentication['type'] %> Authentication

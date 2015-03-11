@@ -187,16 +187,20 @@ function process_api_call(uri, method, data, auth_settings, options) {
       } else if (auth_settings && auth_settings.type.toLowerCase() == 'oauth_bearer') {
         auth_value = "Bearer " + auth_settings.access_token;
 
-      } else if (auth_settings && auth_settings.type.toLowerCase() == 'oauth') { // Oauth 1.0
-        auth_value = 'OAuth oauth_version="' + auth_settings.oauth_version
-          + '", oauth_signature_method="' + auth_settings.oauth_signature_method
-          + '", oauth_consumer_key="' + auth_settings.oauth_consumer_key
-          + '", oauth_signature="' + auth_settings.oauth_signature
-          + '", oauth_timestamp="' + auth_settings.oauth_timestamp
-          + '", oauth_nonce="' + auth_settings.oauth_nonce
-          + '", oauth_token="' + auth_settings.oauth_token + '"';
+      } else if (auth_settings && auth_settings.type.toLowerCase() == 'oauth') { // Oauth
+        if(auth_settings.oauth_version == "1.0") { // 1.0
+          auth_value = 'OAuth oauth_version="' + auth_settings.oauth_version
+            + '", oauth_signature_method="' + auth_settings.oauth_signature_method
+            + '", oauth_consumer_key="' + auth_settings.oauth_consumer_key
+            + '", oauth_signature="' + auth_settings.oauth_signature
+            + '", oauth_timestamp="' + auth_settings.oauth_timestamp
+            + '", oauth_nonce="' + auth_settings.oauth_nonce
+            + '", oauth_token="' + auth_settings.oauth_token + '"';
 
-        extra_settings = ', oauth_secret="' + auth_settings.oauth_secret + '"';
+          extra_settings = ', oauth_secret="' + auth_settings.oauth_secret + '"';
+        }else{ // 2.0
+          auth_value = "Bearer " + auth_settings.oauth_token;
+        }
       }
 
       if (auth_value != null) {
